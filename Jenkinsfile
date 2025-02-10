@@ -42,7 +42,7 @@ spec:
             steps {
                 container('docker') {
                     sh 'docker pull fvegautentia/base-app:1.0'
-                    sh 'docker build -t fvegautentia/base-app:1.0'
+                    sh 'docker build -t fvegautentia/base-app:1.0 .'
                 }
             }
         }
