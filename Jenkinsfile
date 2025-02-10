@@ -1,5 +1,26 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            label 'jenkins-docker-agent'
+            yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: docker
+    image: docker:latest
+    command: ["cat"]
+    tty: true
+    volumeMounts:
+      - name: docker-socket
+        mountPath: /var/run/docker.sock
+  volumes:
+  - name: docker-socket
+    hostPath:
+      path: /var/run/docker.sock
+"""
+        }
+    }
 
     environment {
         PROJECT_ID = 'SportResult'
@@ -19,18 +40,22 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker pull fvegautentia/base-app:1.0'
-                sh 'docker build -t fvegautentia/base-app:1.0'
+                container('docker') {
+                    sh 'docker pull fvegautentia/base-app:1.0'
+                    sh 'docker build -t fvegautentia/base-app:1.0'
+                }
             }
         }
 
         stage('Push Image to GCR') {
             steps {
-                sh '''
-                gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-                gcloud auth configure-docker gcr.io
-                docker push $GCR_HOSTNAME/$PROJECT_ID/$IMAGE_NAME:latest
-                '''
+                container('docker') {
+                    sh '''
+                    gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                    gcloud auth configure-docker gcr.io
+                    docker push $GCR_HOSTNAME/$PROJECT_ID/$IMAGE_NAME:latest
+                    '''
+                }
             }
         }
 
