@@ -19,7 +19,8 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $GCR_HOSTNAME/$PROJECT_ID/$IMAGE_NAME:latest .'
+                sh 'docker pull fvegautentia/base-app:1.0'
+                sh 'docker build -t fvegautentia/base-app:1.0'
             }
         }
 
