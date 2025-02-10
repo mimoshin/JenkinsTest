@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        PROJECT_ID = 'tu-proyecto-gcp'
+        PROJECT_ID = 'SportResult'
         GCR_HOSTNAME = 'gcr.io'
         IMAGE_NAME = 'mi-app'
         CLUSTER_NAME = 'jenkins-cluster'
