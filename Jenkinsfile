@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git credentialsId: 'github-credentials', url: 'https://github.com/usuario/mi-repo.git'
+                git credentialsId: 'github-credentials', url: 'https://github.com/mimoshin/JenkinsTest.git'
             }
         }
 
